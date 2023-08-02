@@ -19,7 +19,7 @@
                     @click="editPost"
                 >
                     <i class="fa-regular fa-pen-to-square"></i>
-                    <span class="ms-2">Edit post</span>
+                    <span class="ms-2">Edit postdede</span>
                 </button>
 
                 <div v-else class="d-flex gap-2">
