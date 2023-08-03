@@ -6,7 +6,7 @@
             <p class="card-text mt-3">
                 <span v-if="!postUpdate">{{ post.body }}</span>
 
-                <textarea v-else v-model="postUpdatedBody" class="form-control form-control-lg"/>
+                <textarea v-else v-model="postUpdatedBody" class="form-control form-control-lg updated_post_input"/>
             </p>
         </div>
         
@@ -25,7 +25,7 @@
                 <div v-else class="d-flex gap-2">
                     <button class="btn btn-sm btn-secondary" @click="postUpdate = false">Cancel</button>
 
-                    <button class="btn btn-sm btn-success" @click="$emit('update', post)">Save</button>
+                    <button class="btn btn-sm btn-success" @click="savePost">Save</button>
                 </div>
             </div>
 
@@ -61,7 +61,11 @@ export default {
     methods: {
         editPost() {
             this.postUpdate = true
-        }
+        },
+        savePost() {
+            this.$emit('update', this.post.id, this.postUpdatedBody);
+            this.postUpdate = false;
+        },
     }
 }
 </script>
@@ -92,5 +96,8 @@ export default {
     -webkit-box-orient: vertical;
     overflow: hidden;
     height: 72px;
+}
+.updated_post_input {
+    font-size: 14px;
 }
 </style>

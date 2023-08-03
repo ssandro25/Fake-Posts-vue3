@@ -9,6 +9,7 @@
             <PostItem
                 :post="post"
                 @remove="$emit('remove', post)"
+                @update="updatePost"
             />
         </div>
     </TransitionGroup>
@@ -29,6 +30,15 @@ export default {
         posts: {
             type: Array,
             required: true
+        }
+    },
+
+    methods: {
+        updatePost(postId, updatedBody) {
+            const posts = this.posts.find(post => post.id === postId);
+            if (posts) {
+                posts.body = updatedBody;
+            }
         }
     }
 }

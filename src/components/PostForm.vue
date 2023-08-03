@@ -21,10 +21,20 @@
 
         <div class="mt-3">
             <button
+                v-if="!isCreatePostLoading"
                 @click="createPost"
                 class="btn btn-primary w-100"
             >
                 Create post
+            </button>
+
+            <button
+                v-else
+                class="btn btn-primary w-100"
+                type="button" disabled
+            >
+                <span class="spinner-grow spinner-grow-sm me-1" aria-hidden="true"></span>
+                <span role="status">Loading...</span>
             </button>
         </div>
     </div>
@@ -40,18 +50,25 @@ export default {
                 title: '',
                 body: '',
                 id: ''
-            }
+            },
+
+            isCreatePostLoading: false
         }
     },
 
     methods: {
         createPost() {
-            this.$emit('create', this.post);
-            this.post = {
-                title: '',
-                body: '',
-                id: Date.now()
-            }
+            this.isCreatePostLoading = true
+            setTimeout(()=> {
+                this.$emit('create', this.post);
+                this.post = {
+                    title: '',
+                    body: '',
+                    id: Date.now()
+                }
+                this.isCreatePostLoading = false
+            }, 500)
+
         }
     }
 }
