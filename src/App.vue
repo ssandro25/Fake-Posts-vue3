@@ -114,7 +114,7 @@ export default {
                 }, 700)
 
             } catch (e) {
-                alert('Posts not found')
+                alert('Posts not found!')
             }
         },
 
