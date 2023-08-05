@@ -17,6 +17,23 @@
                         <PostList
                             :posts="searchedPost"
                             @remove="removePost"/>
+
+                        <nav class="sticky-bottom d-flex justify-content-center bg-white pt-3">
+                            <ul class="pagination">
+                                <li v-for="pageNumber in totalPages"
+                                    :key="pageNumber"
+                                    class="page-item"
+                                    :class="{
+                                        'active' : page === pageNumber
+                                    }"
+                                    aria-current="page"
+                                    style="cursor: pointer;"
+                                    @click="changePage(pageNumber)"
+                                >
+                                    <span class="page-link">{{ pageNumber }}</span>
+                                </li>
+                            </ul>
+                        </nav>
                     </template>
 
                     <h2 v-else class="fs-1 px-2 text-danger mb-0">Posts list is empty</h2>
@@ -40,7 +57,6 @@ import PostForm from "@/components/PostForm.vue";
 import SearchPostInput from "@/components/SearchPostInput.vue";
 import LoadingData from "@/components/LoadingData.vue";
 
-
 export default {
     name: 'App',
 
@@ -54,9 +70,12 @@ export default {
     data() {
         return {
             posts: [],
-            isPostLoading: false,
+            page: 1,
+            limit: 10,
+            totalPages: 0,
             searchWord: '',
-            isCreatePostLoading: false
+            isCreatePostLoading: false,
+            isPostLoading: false,
         }
     },
 
@@ -76,15 +95,24 @@ export default {
             try {
                 this.isPostLoading = true;
                 setTimeout(async ()=> {
-                    const response = await fetch('https://jsonplaceholder.typicode.com/posts?_limit=10');
+                    const queryParams = new URLSearchParams({
+                        _page: this.page.toString(),
+                        _limit: this.limit.toString()
+                    });
+                    const response = await fetch(`https://jsonplaceholder.typicode.com/posts?${queryParams}`);
+                    this.totalPages = Math.ceil(100 / this.limit);
                     this.posts = await response.json();
                     this.posts.reverse()
                     this.isPostLoading = false;
-                }, 1000)
+                }, 700)
 
             } catch (e) {
                 alert('Posts not found')
             }
+        },
+        changePage(pageNumber) {
+            this.page = pageNumber;
+
         }
     },
 
@@ -94,7 +122,13 @@ export default {
 
     computed: {
         searchedPost() {
-            return [...this.posts].reverse().filter(post => post.title.toLowerCase().includes(this.searchWord.toLowerCase()))
+            return [...this.posts].reverse().filter(post => post.title.toLowerCase().includes(this.searchWord.toLowerCase()) || post.body.toLowerCase().includes(this.searchWord.toLowerCase()))
+        }
+    },
+
+    watch: {
+        page() {
+            this.fetchPosts()
         }
     }
 }

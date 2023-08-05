@@ -1,12 +1,12 @@
 <template>
     <div class="card">
         <div class="card-body">
-            <h5 class="card-title text-capitalize">{{ post.title }}</h5>
+            <h5 class="card-title text-capitalize">{{ post.id}} {{ post.title }}</h5>
 
             <p class="card-text mt-3">
                 <span v-if="!postUpdate">{{ post.body }}</span>
 
-                <textarea v-else v-model="postUpdatedBody" class="form-control form-control-lg updated_post_input"/>
+                <textarea v-else v-model="postUpdatedBody" class="form-control form-control-lg updated_post_input" style="height: 72px;"/>
             </p>
         </div>
         

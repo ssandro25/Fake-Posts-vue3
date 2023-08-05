@@ -1,5 +1,6 @@
 <template>
     <div class="shadow rounded p-3 sticky-lg-top" style="top: 16px;">
+        <h4 class="mb-3 text-center">Add post</h4>
         <div>
             <input
                 v-model="post.title"
@@ -60,11 +61,11 @@ export default {
         createPost() {
             this.isCreatePostLoading = true
             setTimeout(()=> {
+                this.post.id = Date.now();
                 this.$emit('create', this.post);
                 this.post = {
                     title: '',
                     body: '',
-                    id: Date.now()
                 }
                 this.isCreatePostLoading = false
             }, 500)
