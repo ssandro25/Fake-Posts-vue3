@@ -18,22 +18,25 @@
                             :posts="searchedPost"
                             @remove="removePost"/>
 
-                        <nav class="sticky-bottom d-flex justify-content-center bg-white pt-3">
-                            <ul class="pagination">
-                                <li v-for="pageNumber in totalPages"
-                                    :key="pageNumber"
-                                    class="page-item"
-                                    :class="{
-                                        'active' : page === pageNumber
-                                    }"
-                                    aria-current="page"
-                                    style="cursor: pointer;"
-                                    @click="changePage(pageNumber)"
-                                >
-                                    <span class="page-link">{{ pageNumber }}</span>
-                                </li>
-                            </ul>
-                        </nav>
+                        <!--  Pagination start! -->
+<!--                        <nav class="sticky-bottom d-flex justify-content-center bg-white pt-3">-->
+<!--                            <ul class="pagination">-->
+<!--                                <li v-for="pageNumber in totalPages"-->
+<!--                                    :key="pageNumber"-->
+<!--                                    class="page-item"-->
+<!--                                    :class="{-->
+<!--                                        'active' : page === pageNumber-->
+<!--                                    }"-->
+<!--                                    aria-current="page"-->
+<!--                                    style="cursor: pointer;"-->
+<!--                                    @click="changePage(pageNumber)"-->
+<!--                                >-->
+<!--                                    <span class="page-link">{{ pageNumber }}</span>-->
+<!--                                </li>-->
+<!--                            </ul>-->
+<!--                        </nav>-->
+                        <!--  Pagination end! -->
+
                     </template>
 
                     <h2 v-else class="fs-1 px-2 text-danger mb-0">Posts list is empty</h2>
@@ -56,6 +59,7 @@ import PostList from "@/components/PostList.vue";
 import PostForm from "@/components/PostForm.vue";
 import SearchPostInput from "@/components/SearchPostInput.vue";
 import LoadingData from "@/components/LoadingData.vue";
+import axios from 'axios'
 
 export default {
     name: 'App',
@@ -88,20 +92,23 @@ export default {
             }, 500)
 
         },
+
         removePost(post) {
             this.posts = this.posts.filter(e => e.id !== post.id)
         },
+
         async fetchPosts() {
             try {
                 this.isPostLoading = true;
                 setTimeout(async ()=> {
-                    const queryParams = new URLSearchParams({
-                        _page: this.page.toString(),
-                        _limit: this.limit.toString()
-                    });
-                    const response = await fetch(`https://jsonplaceholder.typicode.com/posts?${queryParams}`);
+                    const response = await axios.get('https://jsonplaceholder.typicode.com/posts', {
+                        params: {
+                            _page: this.page,
+                            _limit: this.limit
+                        }
+                    })
                     this.totalPages = Math.ceil(100 / this.limit);
-                    this.posts = await response.json();
+                    this.posts = response.data;
                     this.posts.reverse()
                     this.isPostLoading = false;
                 }, 700)
@@ -110,10 +117,10 @@ export default {
                 alert('Posts not found')
             }
         },
-        changePage(pageNumber) {
-            this.page = pageNumber;
 
-        }
+        // changePage(pageNumber) {
+        //     this.page = pageNumber;
+        // }
     },
 
     mounted() {
@@ -127,9 +134,9 @@ export default {
     },
 
     watch: {
-        page() {
-            this.fetchPosts()
-        }
+        // page() {
+        //     this.fetchPosts()
+        // }
     }
 }
 </script>
