@@ -1,18 +1,13 @@
 <template>
     <div>
-        <router-view></router-view>
+        <router-link to="/">Back to posts </router-link>
+        Post id = {{ $route.params.id }}
     </div>
 </template>
 
 <script>
-
-
 export default {
-    name: 'App',
 
-    components: {
-
-    }
 }
 </script>
 

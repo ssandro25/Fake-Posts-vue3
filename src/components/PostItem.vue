@@ -11,6 +11,7 @@
         </div>
         
         <div class="card-footer d-flex justify-content-between">
+            <button class="btn btn-primary btn-sm" @click="$router.push(`/post/${post.id}`)">View post</button>
             <div>
                 <button
                     v-if="!postUpdate"
