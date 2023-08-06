@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import PostItem from "@/components/PostItem.vue";
+import PostItem from "@/components/parts/PostItem.vue";
 
 export default {
     name: 'PostList',

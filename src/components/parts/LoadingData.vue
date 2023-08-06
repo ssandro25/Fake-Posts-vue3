@@ -32,7 +32,7 @@
 </template>
 
 <script>
-import SearchPostInput from "@/components/SearchPostInput.vue";
+import SearchPostInput from "@/components/parts/SearchPostInput.vue";
 
 export default {
     components: {

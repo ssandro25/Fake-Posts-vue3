@@ -46,7 +46,7 @@
                     <LoadingData/>
                 </div>
 
-                <div ref="observer" class="row row-cols-md-2 row-cols-1 m-0 g-3">
+                <div v-intersection="loadMorePosts" class="row row-cols-md-2 row-cols-1 m-0 g-3">
                     <div v-for="post in 2"
                          :key="post"
                          class="col px-2">
@@ -80,10 +80,10 @@
 </template>
 
 <script>
-import PostList from "@/components/PostList.vue";
-import PostForm from "@/components/PostForm.vue";
-import SearchPostInput from "@/components/SearchPostInput.vue";
-import LoadingData from "@/components/LoadingData.vue";
+import PostList from "@/components/parts/PostList.vue";
+import PostForm from "@/components/parts/PostForm.vue";
+import SearchPostInput from "@/components/parts/SearchPostInput.vue";
+import LoadingData from "@/components/parts/LoadingData.vue";
 import axios from 'axios'
 
 export default {
@@ -169,18 +169,6 @@ export default {
 
     mounted() {
         this.fetchPosts();
-
-        const options = {
-            rootMargin: "0px",
-            threshold: 1.0,
-        };
-        const callback =  (entries) => {
-            if(entries[0].isIntersecting && this.page < this.totalPages) {
-                this.loadMorePosts()
-            }
-        };
-        const observer = new IntersectionObserver(callback, options);
-        observer.observe(this.$refs.observer)
     },
 
     computed: {
