@@ -45,6 +45,31 @@
                 <div v-else>
                     <LoadingData/>
                 </div>
+
+                <div ref="observer" class="row row-cols-md-2 row-cols-1 m-0 g-3">
+                        <div v-for="post in 2"
+                             :key="post"
+                             class="col px-2">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title placeholder-glow">
+                                        <span class="placeholder col-12"></span>
+                                    </h5>
+
+                                    <p class="card-text placeholder-glow mt-3">
+                                        <span class="placeholder col-12 h-100"></span>
+                                    </p>
+                                </div>
+
+                                <div class="card-footer d-flex justify-content-between placeholder-glow">
+                                    <div class="placeholder col-5" style="height: 30px"></div>
+
+                                    <div class="placeholder col-5" style="height: 30px"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
             </div>
 
             <div class="col-lg-3">
@@ -87,7 +112,7 @@ export default {
         createPost(post) {
             this.isCreatePostLoading = true;
             setTimeout(()=> {
-                this.posts.push(post)
+                this.posts.unshift(post)
                 this.isCreatePostLoading = false;
             }, 500)
 
@@ -109,7 +134,6 @@ export default {
                     })
                     this.totalPages = Math.ceil(100 / this.limit);
                     this.posts = response.data;
-                    this.posts.reverse()
                     this.isPostLoading = false;
                 }, 700)
 
@@ -118,6 +142,26 @@ export default {
             }
         },
 
+        async loadMorePosts() {
+            try {
+                this.page += 1;
+                setTimeout(async ()=> {
+                    const response = await axios.get('https://jsonplaceholder.typicode.com/posts', {
+                        params: {
+                            _page: this.page,
+                            _limit: this.limit
+                        }
+                    })
+                    this.totalPages = Math.ceil(100 / this.limit);
+                    this.posts = [...this.posts, ...response.data];
+                }, 400)
+
+            } catch (e) {
+                alert('Posts not found!')
+            }
+        },
+
+
         // changePage(pageNumber) {
         //     this.page = pageNumber;
         // }
@@ -125,11 +169,23 @@ export default {
 
     mounted() {
         this.fetchPosts();
+
+        const options = {
+            rootMargin: "0px",
+            threshold: 1.0,
+        };
+        const callback =  (entries) => {
+           if(entries[0].isIntersecting && this.page < this.totalPages) {
+               this.loadMorePosts()
+           }
+        };
+        const observer = new IntersectionObserver(callback, options);
+        observer.observe(this.$refs.observer)
     },
 
     computed: {
         searchedPost() {
-            return [...this.posts].reverse().filter(post => post.title.toLowerCase().includes(this.searchWord.toLowerCase()) || post.body.toLowerCase().includes(this.searchWord.toLowerCase()))
+            return [...this.posts].filter(post => post.title.toLowerCase().includes(this.searchWord.toLowerCase()) || post.body.toLowerCase().includes(this.searchWord.toLowerCase()))
         }
     },
 
